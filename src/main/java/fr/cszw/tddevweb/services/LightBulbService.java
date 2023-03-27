@@ -24,6 +24,10 @@ public class LightBulbService {
         this.id++;
     }
 
+    public void toggleAllLightBulbs(boolean state) {
+        this.lightBulbList.forEach(bulb -> bulb.setState(state));
+    }
+
 
     public int getNumberOfBulb() {
         return this.lightBulbList.size();

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController()
+@CrossOrigin(origins = "http://localhost:4200")
 public class LightBulbControllers {
 
     private LightBulbService lightBulbService;
@@ -25,6 +26,20 @@ public class LightBulbControllers {
     @GetMapping("bulb")
     public List<LightBulb> getLightBulbList() {
         return lightBulbService.getLightBulbList();
+    }
+
+    @GetMapping("bulbById")
+    public ResponseEntity<LightBulb> getLightBulbById(@RequestParam("id") int id) {
+        LightBulb found = this.lightBulbService.getLightBulbList()
+                .stream()
+                .filter(bulb -> bulb.getId() == id)
+                .findFirst()
+                .orElse(null);
+
+        if (found == null) return ResponseEntity.badRequest().build();
+
+        return ResponseEntity.ok().body(found);
+
     }
 
     @PostMapping("bulb")
@@ -47,6 +62,12 @@ public class LightBulbControllers {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @PatchMapping("allBulbs")
+    public ResponseEntity<String> toggleAllBulbs(@RequestParam("state") boolean state) {
+        this.lightBulbService.toggleAllLightBulbs(state);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("errortest")
